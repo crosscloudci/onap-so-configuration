@@ -1,0 +1,2 @@
+# ONAP MSO Pipeline configuration
+
