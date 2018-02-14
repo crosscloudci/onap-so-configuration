@@ -28,8 +28,7 @@ compile:
 
 container:
   stage: package
-  #image: ruby:2.4.3-stretch
-  image: crosscloudci/external_ci_integration
+  image: crosscloudci/onap-ciservice
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - INTEGRATION_NAME="onap-so"
