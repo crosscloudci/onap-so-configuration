@@ -32,7 +32,7 @@ container:
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - INTEGRATION_NAME="onap-so"
-    - #build_pipeline --integration $INTEGRATION_NAME artifact download $CONTAINER_URL
+    - echo SKIP: build_pipeline --integration $INTEGRATION_NAME artifact download $CONTAINER_URL
     - touch release.env
     - cat release.env
   dependencies:
