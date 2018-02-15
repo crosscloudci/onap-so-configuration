@@ -24,22 +24,16 @@ before_script:
 compile:
   stage: build
   script:
-    - true
+    - echo skipped
 
 container:
   stage: package
-  image: crosscloudci/onap-ciservice
+  image: crosscloudci/external_ci_integration
   script:
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - INTEGRATION_NAME="onap-so"
     - #build_pipeline --integration $INTEGRATION_NAME artifact download $CONTAINER_URL
-    - #build_pipeline --integration $INTEGRATION_NAME artifact verify local_container
-    - #build_pipeline --integration $INTEGRATION_NAME artifact verify_container $CONTAINER_URL
-    - #docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
-
-    - #build_pipeline --integration $INTEGRATION_NAME artificat create_pinning | tee release.env
-    - echo export IMAGE_ARGS=\"--set image.repository=$CI_REGISTRY_IMAGE\" | tee release.env
-    - echo export TAG_ARGS=\"--set image.tag=$IMAGE_TAG\" | tee -a release.env
+    - touch release.env
     - cat release.env
   dependencies:
     - compile
