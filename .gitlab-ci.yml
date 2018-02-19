@@ -20,6 +20,7 @@ before_script:
     else
       export CROSS_CLOUD_YML="$CROSS_CLOUD_YML"
     fi
+  - echo "$CROSS_CLOUD_YML"
   - >
     if ruby -v ; then
         echo 'Ruby found, not using rvm'
