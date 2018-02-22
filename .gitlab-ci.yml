@@ -58,11 +58,7 @@ container:
       else
         export INTEGRATION_RELEASE_TYPE="stable"
       fi
-    - pwd 
     - cd /onapciservice
-    - pwd
-    - ls -la
-    - sleep 10000
     - bundle install
     - cd /onapciservice/bin/
     - ./build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
