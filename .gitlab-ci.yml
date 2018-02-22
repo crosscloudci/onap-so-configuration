@@ -53,6 +53,7 @@ container:
     - mkdir ~/.docker && echo "$DOCKER" > ~/.docker/config.json
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - INTEGRATION_NAME="onap"
+    - pwd
     - >
       if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
         export INTEGRATION_RELEASE_TYPE="head"
@@ -61,10 +62,10 @@ container:
       fi
     - cd /onapciservice
     - bundle install
-    - cd /onapciservice/bin/
-    - ./build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
-    - ./build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
-    - ./build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
+    - cd -
+    - /onapciservice/build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
     - cat release.env
     - cd ..
     - ls -la
