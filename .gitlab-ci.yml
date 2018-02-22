@@ -63,9 +63,9 @@ container:
     - cd /onapciservice
     - bundle install
     - cd -
-    - /onapciservice/build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
-    - /onapciservice/build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
-    - /onapciservice/build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
+    - /onapciservice/bin/build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/bin/build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/bin/build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
     - cat release.env
     - cd ..
     - ls -la
