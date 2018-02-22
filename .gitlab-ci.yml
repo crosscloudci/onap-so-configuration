@@ -50,6 +50,7 @@ container:
   stage: package
   image: crosscloudci/onap-ciservice:onap2
   script:
+    - mkdir ~/.docker && echo "$DOCKER" > ~/.docker/config.json
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
     - INTEGRATION_NAME="onap"
     - >
