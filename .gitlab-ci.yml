@@ -63,7 +63,6 @@ container:
     - bundle install
     - cd /onapciservice/bin/
     - ./build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
-    - sleep 10000000
     - ./build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
     - ./build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
     - cat release.env
