@@ -5,13 +5,14 @@ stages:
 before_script:
   - export BASE_URL=${BASE_URL:-$(echo $CI_PROJECT_URL |  cut -d'/' -f1-3)}
   - export CI_COMMIT_SHA_SHORT=$(echo ${CI_COMMIT_SHA} | cut -c -8)
+  - echo "$BASE_URL"
   - >
     if [ -z "$CROSS_CLOUD_YML" ]; then
-       if [ "BASE_URL" == "https://gitlab.cncf.ci" ]; then
+       if [ "$BASE_URL" == "https://gitlab.cncf.ci" ]; then
           export CROSS_CLOUD_YML="https://raw.githubusercontent.com/CrossCloudCI/cncf-configuration/production/cross-cloud.yml"
-       elif [ "BASE_URL" == "https://gitlab.staging.cncf.ci" ]; then
+       elif [ "$BASE_URL" == "https://gitlab.staging.cncf.ci" ]; then
           export CROSS_CLOUD_YML="https://raw.githubusercontent.com/CrossCloudCI/cncf-configuration/staging/cross-cloud.yml"
-       elif [ "BASE_URL" == "https://gitlab.cidev.cncf.ci" ]; then
+       elif [ "$BASE_URL" == "https://gitlab.cidev.cncf.ci" ]; then
           export CROSS_CLOUD_YML="https://raw.githubusercontent.com/CrossCloudCI/cncf-configuration/integration/cross-cloud.yml"
        else
           export CROSS_CLOUD_YML="https://raw.githubusercontent.com/CrossCloudCI/cncf-configuration/master/cross-cloud.yml"
@@ -19,30 +20,53 @@ before_script:
     else
       export CROSS_CLOUD_YML="$CROSS_CLOUD_YML"
     fi
-  - source /opt/local/etc/rvmrc ; source /opt/local/etc/profile.d/rvm.sh ; cp -a /opt/local/dashboard /dashboard ; pushd /dashboard ; source /opt/local/.env ; ./bin/update_dashboard ; popd
+  - echo "$CROSS_CLOUD_YML"
+  - >
+    if ruby -v ; then
+        echo 'Ruby found, not using rvm'
+        cp -a /opt/local/dashboard /dashboard 
+        pushd /dashboard
+        source /opt/local/.env
+        bundle install
+        ./bin/update_dashboard
+        popd
+    else
+       source /opt/local/etc/rvmrc
+       source /opt/local/etc/profile.d/rvm.sh
+       cp -a /opt/local/dashboard /dashboard
+       pushd /dashboard
+       source /opt/local/.env
+       ./bin/update_dashboard
+       popd
+    fi
 
 compile:
   stage: build
+  image: crosscloudci/onap-ciservice
   script:
-    - true
+    - echo 'skipped'
 
 container:
   stage: package
-  image: crosscloudci/onap-ciservice
+  image: crosscloudci/onap-ciservice:onap2
   script:
+    - mkdir ~/.docker && echo "$DOCKER" > ~/.docker/config.json
     - IMAGE_TAG=${CI_COMMIT_REF_NAME}.${CI_COMMIT_SHA_SHORT}.${CI_JOB_ID}
-    - INTEGRATION_NAME="onap-so"
-    - #build_pipeline --integration $INTEGRATION_NAME artifact download $CONTAINER_URL
-    - #build_pipeline --integration $INTEGRATION_NAME artifact verify local_container
-    - #build_pipeline --integration $INTEGRATION_NAME artifact verify_container $CONTAINER_URL
-    - #docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
-
-    - #build_pipeline --integration $INTEGRATION_NAME artificat create_pinning | tee release.env
-    - echo export IMAGE_ARGS=\"--set image.repository=$CI_REGISTRY_IMAGE\" | tee release.env
-    - echo export TAG_ARGS=\"--set image.tag=$IMAGE_TAG\" | tee -a release.env
+    - INTEGRATION_NAME="onap"
+    - pwd
+    - >
+      if [ "$CI_COMMIT_REF_NAME" == "master" ]; then
+        export INTEGRATION_RELEASE_TYPE="head"
+      else
+        export INTEGRATION_RELEASE_TYPE="stable"
+      fi
+    - cd /onapciservice
+    - bundle install
+    - cd -
+    - /onapciservice/bin/build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/bin/build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
+    - /onapciservice/bin/build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
     - cat release.env
-  dependencies:
-    - compile
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
     expire_in: 5 weeks
