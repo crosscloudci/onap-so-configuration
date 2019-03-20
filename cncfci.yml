@@ -1,5 +1,5 @@
 project:
   logo_url: "https://github.com/crosscloudci/artwork/raw/master/ONAP/logo_onap_2017-square.png"
-  display_name: ONAP2
-  sub_title: Network Automation2
-  project_url: "https://github.com/onap/so/releases"
+  display_name: ONAP
+  sub_title: Network Automation
+  project_url: "https://github.com/onap/so"
