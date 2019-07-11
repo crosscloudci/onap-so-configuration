@@ -3,3 +3,5 @@ project:
   display_name: ONAP SO
   sub_title: Network Automation
   project_url: "https://github.com/onap/so"
+  stable_ref: "v1.1.1"
+  head_ref: "master"
