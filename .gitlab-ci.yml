@@ -62,7 +62,6 @@ container:
       fi
     - cd /onapciservice
     - bundle install
-    - cd -
     - bundle exec /onapciservice/bin/build_pipeline build_status --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
     - bundle exec /onapciservice/bin/build_pipeline download_container --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so
     - bundle exec /onapciservice/bin/build_pipeline create_pinnings --integration=$INTEGRATION_NAME --release-type=$INTEGRATION_RELEASE_TYPE so | tee -a release.env
