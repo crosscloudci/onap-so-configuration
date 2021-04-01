@@ -17,7 +17,7 @@ before_script:
         echo 'Ruby found, not using rvm'
         cp -a /opt/local/dashboard /dashboard 
         pushd /dashboard
-        /bin/bash -c "source /opt/local/.env"
+        source /opt/local/.env
         bundle install
         ./bin/update_dashboard
         popd
@@ -26,7 +26,9 @@ before_script:
        source /opt/local/etc/profile.d/rvm.sh
        cp -a /opt/local/dashboard /dashboard
        pushd /dashboard
-       /bin/bash -c "source /opt/local/.env"
+       source /opt/local/.env
+       rvm use ruby-2.3.0
+       bundle install
        ./bin/update_dashboard
        popd
     fi
